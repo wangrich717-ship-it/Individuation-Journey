@@ -35,52 +35,47 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build (set base for project pages)
+      - name: Build
         shell: bash
         run: |
           set -e
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "repo=$GITHUB_REPOSITORY"
-          echo "repo_name=$REPO_NAME"
-          echo "base=/$REPO_NAME/"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Repository name: $REPO_NAME"
+          echo "Base path: /$REPO_NAME/"
           pnpm exec vite build --base="/$REPO_NAME/"
 
-      - name: Fix absolute /audio paths for GitHub Pages
+      - name: Fix absolute resource paths
         shell: bash
         run: |
-          python3 - <<'PY'
-          import os
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          BASE="/$REPO_NAME"
+          echo "Fixing absolute paths with base: $BASE"
+          
+          # 使用 find + sed 批量替换所有 JS/CSS/HTML/MAP 文件中的绝对路径
+          find dist/public -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.map" \) -print0 | while IFS= read -r -d '' file; do
+            # 替换各种格式的 /audio 路径
+            sed -i "s|'/audio|'$BASE/audio|g" "$file"
+            sed -i 's|"/audio|"'$BASE'/audio|g' "$file"
+            sed -i "s|/audio/|$BASE/audio/|g" "$file"
+            sed -i "s|/audio\"|$BASE/audio\"|g" "$file"
+            sed -i "s|/audio'|$BASE/audio'|g" "$file"
+            
+            # 替换 /imagery 路径（如果有）
+            sed -i "s|'/imagery|'$BASE/imagery|g" "$file"
+            sed -i 's|"/imagery|"'$BASE'/imagery|g" "$file"
+            sed -i "s|/imagery/|$BASE/imagery/|g" "$file"
+            
+            # 替换其他可能的绝对路径
+            sed -i "s|href=\"/|href=\"$BASE/|g" "$file"
+            sed -i "s|src=\"/|src=\"$BASE/|g" "$file"
+            sed -i "s|url(\"/|url(\"$BASE/|g" "$file"
+            sed -i "s|url('/|url('$BASE/|g" "$file"
+          done
+          
+          echo "Path fixing completed"
 
-          repo = os.environ["GITHUB_REPOSITORY"].split("/", 1)[1]
-          base = f"/{repo}/"
-
-          patterns = [
-            ('"/audio/', f'"{base}audio/'),
-            ("'/audio/", f"'{base}audio/"),
-          ]
-
-          root = "dist/public"
-          for dirpath, _, filenames in os.walk(root):
-            for fn in filenames:
-              if not fn.endswith((".js", ".css", ".html", ".map")):
-                continue
-              p = os.path.join(dirpath, fn)
-              try:
-                text = open(p, "rb").read().decode("utf-8")
-              except Exception:
-                continue
-
-              new = text
-              for a, b in patterns:
-                new = new.replace(a, b)
-
-              if new != text:
-                open(p, "wb").write(new.encode("utf-8"))
-
-          print("patched base =", base)
-          PY
-
-      - name: SPA fallback (404.html)
+      - name: Create 404.html for SPA routing
         shell: bash
         run: cp dist/public/index.html dist/public/404.html
 
