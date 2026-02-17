@@ -37,9 +37,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm exec vite build
+        run: |
+          echo "Building for GitHub Pages..."
+          echo "Repository: ${{ github.repository }}"
+          pnpm exec vite build --base="/${{ github.event.repository.name }}/"
         env:
-          GITHUB_PAGES: true
+          GITHUB_PAGES: 'true'
 
       - name: List build output
         run: ls -la dist/public || echo "Build output directory not found"
