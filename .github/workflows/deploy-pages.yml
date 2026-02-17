@@ -40,9 +40,11 @@ jobs:
         run: |
           echo "Building for GitHub Pages..."
           echo "Repository: ${{ github.repository }}"
-          pnpm exec vite build --base="/${{ github.event.repository.name }}/"
+          # 设置 base 路径为仓库名，确保资源路径正确
+          pnpm exec vite build --base="/Individuation-Journey/"
         env:
           GITHUB_PAGES: 'true'
+          VITE_BASE_URL: '/Individuation-Journey/'
 
       - name: List build output
         run: ls -la dist/public || echo "Build output directory not found"
