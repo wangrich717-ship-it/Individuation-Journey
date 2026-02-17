@@ -42,14 +42,10 @@ jobs:
           echo "Base path: /$REPO_NAME/"
           pnpm exec vite build --base="/$REPO_NAME/"
 
-      - name: Fix absolute resource paths
+      - name: Fix ALL absolute resource paths
         shell: bash
         run: |
           set -e
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          BASE="/$REPO_NAME"
-          echo "Fixing absolute paths with base: $BASE"
-          
           python3 - <<'PY'
           import os, re
 
@@ -60,44 +56,81 @@ jobs:
           if not os.path.isdir(out_root):
             raise SystemExit(f"Missing build output: {out_root}")
 
-          rules = [
-            # 音频路径
-            (re.compile(r'(["\'])/audio\b'),  r'\1' + base + 'audio'),
-            # 意象图片路径
-            (re.compile(r'(["\'])/imagery\b'), r'\1' + base + 'imagery'),
-            # 阴影卡片路径（中文路径）
-            (re.compile(r'(["\'])/复原主卡/'), r'\1' + base + '复原主卡/'),
-            # 动物卡片路径（中文路径）
-            (re.compile(r'(["\'])/动物卡/'), r'\1' + base + '动物卡/'),
-            # 修复模板字符串中的路径（如 `/imagery/${...}`）
-            (re.compile(r'`/imagery/'), '`' + base + 'imagery/'),
-            (re.compile(r'`/audio/'), '`' + base + 'audio/'),
-            (re.compile(r'`/复原主卡/'), '`' + base + '复原主卡/'),
-            (re.compile(r'`/动物卡/'), '`' + base + '动物卡/'),
+          # 需要修复的所有路径前缀
+          paths_to_fix = [
+            "/audio",
+            "/imagery",
+            "/复原主卡",
+            "/动物卡",
           ]
 
           exts = (".js", ".css", ".html", ".map")
           patched = 0
 
+          def fix_paths_in_text(text):
+              """修复文本中的所有绝对路径"""
+              new_text = text
+              
+              for path_prefix in paths_to_fix:
+                  # 1. 修复字符串字面量: "/audio" 或 '/audio'
+                  new_text = re.sub(
+                      rf'(["\']){re.escape(path_prefix)}\b',
+                      rf'\1{base}{path_prefix[1:]}',  # path_prefix[1:] 去掉开头的 /
+                      new_text
+                  )
+                  
+                  # 2. 修复模板字符串: `/audio/` 或 `/audio`
+                  new_text = re.sub(
+                      rf'`{re.escape(path_prefix)}',
+                      f'`{base}{path_prefix[1:]}',
+                      new_text
+                  )
+                  
+                  # 3. 修复字符串拼接: "/audio/" + ... 或 "/audio" + ...
+                  new_text = re.sub(
+                      rf'(["\']){re.escape(path_prefix)}/?"\s*\+',
+                      rf'\1{base}{path_prefix[1:]}/" +',
+                      new_text
+                  )
+                  
+                  # 4. 修复 URL 中的路径（如 src="/audio/..."）
+                  new_text = re.sub(
+                      rf'(src|href|url\(["\']?){re.escape(path_prefix)}',
+                      rf'\1{base}{path_prefix[1:]}',
+                      new_text
+                  )
+                  
+                  # 5. 修复 JSON 字符串中的路径
+                  new_text = re.sub(
+                      rf':\s*["\']{re.escape(path_prefix)}',
+                      f': "{base}{path_prefix[1:]}',
+                      new_text
+                  )
+
+              return new_text
+
           for dirpath, _, filenames in os.walk(out_root):
-            for fn in filenames:
-              if not fn.endswith(exts):
-                continue
-              p = os.path.join(dirpath, fn)
-              try:
-                text = open(p, "rb").read().decode("utf-8")
-              except Exception:
-                continue
+              for fn in filenames:
+                  if not fn.endswith(exts):
+                      continue
+                  p = os.path.join(dirpath, fn)
+                  try:
+                      with open(p, "rb") as f:
+                          data = f.read()
+                      text = data.decode("utf-8")
+                  except Exception as e:
+                      print(f"Skipping {p}: {e}")
+                      continue
 
-              new = text
-              for rgx, rep in rules:
-                new = rgx.sub(rep, new)
+                  new_text = fix_paths_in_text(text)
 
-              if new != text:
-                open(p, "wb").write(new.encode("utf-8"))
-                patched += 1
+                  if new_text != text:
+                      with open(p, "wb") as f:
+                          f.write(new_text.encode("utf-8"))
+                      patched += 1
 
-          print(f"base = {base}, patched_files = {patched}")
+          print(f"✅ Fixed paths with base: {base}")
+          print(f"✅ Patched {patched} files")
           PY
 
       - name: SPA fallback + disable Jekyll
