@@ -21,35 +21,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (with pnpm cache)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: pnpm
 
-      - name: Enable pnpm via Corepack
-        shell: bash
-        run: |
-          set -e
-          corepack enable
-          corepack prepare pnpm@10.4.1 --activate
-          pnpm --version
+      - name: Install pnpm
+        run: npm install -g pnpm@10.4.1
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build (GitHub Pages base)
+      - name: Build
         shell: bash
         run: |
           set -e
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "base=/$REPO_NAME/"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Repository name: $REPO_NAME"
+          echo "Base path: /$REPO_NAME/"
           pnpm exec vite build --base="/$REPO_NAME/"
 
-      - name: Patch absolute asset roots (/audio, /imagery)
+      - name: Fix absolute resource paths
         shell: bash
         run: |
           set -e
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          BASE="/$REPO_NAME"
+          echo "Fixing absolute paths with base: $BASE"
+          
           python3 - <<'PY'
           import os, re
 
@@ -86,7 +86,7 @@ jobs:
                 open(p, "wb").write(new.encode("utf-8"))
                 patched += 1
 
-          print("base =", base, "patched_files =", patched)
+          print(f"base = {base}, patched_files = {patched}")
           PY
 
       - name: SPA fallback + disable Jekyll
