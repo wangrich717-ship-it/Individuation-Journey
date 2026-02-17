@@ -21,16 +21,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.4.1
-
-      - name: Setup Node.js
+      - name: Setup Node.js (with pnpm cache)
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: pnpm
+
+      - name: Enable pnpm via Corepack
+        shell: bash
+        run: |
+          set -e
+          corepack enable
+          corepack prepare pnpm@10.4.1 --activate
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -40,7 +43,6 @@ jobs:
         run: |
           set -e
           REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          echo "repo=$GITHUB_REPOSITORY"
           echo "base=/$REPO_NAME/"
           pnpm exec vite build --base="/$REPO_NAME/"
 
@@ -58,24 +60,21 @@ jobs:
           if not os.path.isdir(out_root):
             raise SystemExit(f"Missing build output: {out_root}")
 
-          # 只改“带引号”的绝对路径，避免误伤 https:// 等
-          # "/audio" 或 '/audio' -> "/<repo>/audio"
           rules = [
             (re.compile(r'(["\'])/audio\b'),  r'\1' + base + 'audio'),
             (re.compile(r'(["\'])/imagery\b'), r'\1' + base + 'imagery'),
           ]
 
           exts = (".js", ".css", ".html", ".map")
-
           patched = 0
+
           for dirpath, _, filenames in os.walk(out_root):
             for fn in filenames:
               if not fn.endswith(exts):
                 continue
               p = os.path.join(dirpath, fn)
               try:
-                data = open(p, "rb").read()
-                text = data.decode("utf-8")
+                text = open(p, "rb").read().decode("utf-8")
               except Exception:
                 continue
 
