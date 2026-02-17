@@ -61,8 +61,19 @@ jobs:
             raise SystemExit(f"Missing build output: {out_root}")
 
           rules = [
+            # 音频路径
             (re.compile(r'(["\'])/audio\b'),  r'\1' + base + 'audio'),
+            # 意象图片路径
             (re.compile(r'(["\'])/imagery\b'), r'\1' + base + 'imagery'),
+            # 阴影卡片路径（中文路径）
+            (re.compile(r'(["\'])/复原主卡/'), r'\1' + base + '复原主卡/'),
+            # 动物卡片路径（中文路径）
+            (re.compile(r'(["\'])/动物卡/'), r'\1' + base + '动物卡/'),
+            # 修复模板字符串中的路径（如 `/imagery/${...}`）
+            (re.compile(r'`/imagery/'), '`' + base + 'imagery/'),
+            (re.compile(r'`/audio/'), '`' + base + 'audio/'),
+            (re.compile(r'`/复原主卡/'), '`' + base + '复原主卡/'),
+            (re.compile(r'`/动物卡/'), '`' + base + '动物卡/'),
           ]
 
           exts = (".js", ".css", ".html", ".map")
