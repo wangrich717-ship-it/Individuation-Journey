@@ -85,14 +85,15 @@ export const initialGameState: GameState = {
   taskCompletions: {},
 };
 
-// Scene background images
+// Scene background images — BASE_URL is injected by Vite at build time (e.g. /Individuation-Journey/)
+const _base = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const SCENE_IMAGES = {
-  desert: '/bg-desert.webp',
-  cave: '/bg-cave.webp',
-  forest: '/bg-forest.webp',
-  alchemy: '/bg-alchemy.webp',
-  starfield: '/bg-starfield.webp',
-  imagerySea: '/imagery-sea.webp',
+  desert: `${_base}/bg-desert.webp`,
+  cave: `${_base}/bg-cave.webp`,
+  forest: `${_base}/bg-forest.webp`,
+  alchemy: `${_base}/bg-alchemy.webp`,
+  starfield: `${_base}/bg-starfield.webp`,
+  imagerySea: `${_base}/imagery-sea.webp`,
 };
 
 // Shadow name options for Chapter 1 quest (扩展至18个)

@@ -6,7 +6,7 @@
  */
 import type { GamePhase } from './gameStore';
 
-const AUDIO_BASE = '/audio';
+const AUDIO_BASE = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/audio`;
 
 const BGM_BY_PHASE: Record<string, string> = {
   title: 'bgm-title',

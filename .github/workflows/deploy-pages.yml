@@ -56,15 +56,11 @@ jobs:
           if not os.path.isdir(out_root):
             raise SystemExit(f"Missing build output: {out_root}")
 
-          # 需要修复的所有路径前缀
+          # 需要修复的路径前缀（bg/audio/fonts 已在源码中用 import.meta.env.BASE_URL 处理）
           paths_to_fix = [
-            "/audio",
             "/imagery",
             "/复原主卡",
             "/动物卡",
-            "/bg-",
-            "/imagery-sea.webp",
-            "/fonts",
           ]
 
           exts = (".js", ".css", ".html", ".map")
