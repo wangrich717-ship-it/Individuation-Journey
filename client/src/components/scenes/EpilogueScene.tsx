@@ -181,7 +181,7 @@ function KnowledgeCardsCarousel({ cardIds, onCardClick }: { cardIds: string[]; o
               >
                 {card.definition}
               </div>
-              <div className="text-[10px] mt-1" style={{ color: 'rgba(255, 215, 0, 0.75)', fontFamily: 'Cinzel, serif' }}>
+              <div className="text-[10px] mt-1 text-center" style={{ color: 'rgba(255, 215, 0, 0.75)', fontFamily: 'Cinzel, serif' }}>
                 点击查看
               </div>
             </button>
@@ -354,8 +354,9 @@ export default function EpilogueScene({
               </div>
               <button
                 onClick={() => setSelectedCard(null)}
-                className="mt-4 px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10 rounded"
+                className="block mt-4 px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10 rounded"
                 style={{
+                  margin: '1rem auto 0',
                   fontFamily: 'Noto Serif SC, serif',
                   color: '#C4A35A',
                   border: '1px solid rgba(196, 163, 90, 0.3)',

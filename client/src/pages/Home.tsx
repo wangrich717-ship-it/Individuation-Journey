@@ -90,6 +90,17 @@ const TEST_JUMP_OPTIONS: { group: string; options: { label: string; phase: GameP
 
 const ALL_UNLOCKED: GamePhase[] = ['prologue', 'chapter1-intro', 'chapter2-intro', 'chapter3-intro', 'alchemy-altar', 'chapter4-individuation', 'epilogue'];
 
+// 完整游戏道具（炼金术祭坛需要全部5件）
+const FULL_INVENTORY = ['人格面具', '遗失的罗盘', '三种原力', '灵魂之乐', '纹章印记'];
+// 全部知识卡片 ID（跳到终章时展示）
+const ALL_KNOWLEDGE_CARD_IDS = [
+  'persona', 'collective-unconscious', 'individuation',
+  'shadow', 'projection', 'shadow-root', 'shadow-naming', 'shadow-integration', 'shadow-transformation',
+  'rational-intuitive', 'inner-voice', 'anima-animus', 'intuition-recognition', 'anima-guidance',
+  'opposites-integration', 'transformation-goal',
+];
+const DEFAULT_SHADOW_NAMES = ['执念', '恐惧', '愤怒'];
+
 export default function Home() {
   const [gameState, setGameState] = useState<GameState>({ ...initialGameState });
   const [testPanelOpen, setTestPanelOpen] = useState(false);
@@ -408,6 +419,8 @@ export default function Home() {
         ...prev,
         phase: 'chapter2-intro',
         unlockedChapters: unlockAll,
+        shadowName: prev.shadowName || DEFAULT_SHADOW_NAMES[0],
+        shadowNames: prev.shadowNames?.length ? prev.shadowNames : [...DEFAULT_SHADOW_NAMES],
         questionAnswers: Object.fromEntries(
           Object.entries(prev.questionAnswers).filter(([key]) => !key.startsWith('chapter2-') && !key.startsWith('listening-') && !key.startsWith('understanding-'))
         ),
@@ -435,7 +448,34 @@ export default function Home() {
           'chapter3': (prev.chapterResetCounter?.['chapter3'] || 0) + 1,
         },
       }));
-    } else if (phase === 'alchemy-altar' || phase === 'chapter4-individuation' || phase === 'epilogue') {
+    } else if (phase === 'alchemy-altar') {
+      setGameState(prev => ({
+        ...prev,
+        phase,
+        unlockedChapters: unlockAll,
+        inventory: prev.inventory.length ? prev.inventory : [...FULL_INVENTORY],
+        shadowName: prev.shadowName || DEFAULT_SHADOW_NAMES[0],
+        shadowNames: prev.shadowNames?.length ? prev.shadowNames : [...DEFAULT_SHADOW_NAMES],
+        emotionName: prev.emotionName || '适应力、转化、平衡',
+        knowledgeCards: prev.knowledgeCards.length ? prev.knowledgeCards : [...ALL_KNOWLEDGE_CARD_IDS],
+      }));
+    } else if (phase === 'epilogue') {
+      setGameState(prev => ({
+        ...prev,
+        phase,
+        unlockedChapters: unlockAll,
+        inventory: prev.inventory.length ? prev.inventory : [...FULL_INVENTORY],
+        shadowName: prev.shadowName || DEFAULT_SHADOW_NAMES[0],
+        shadowNames: prev.shadowNames?.length ? prev.shadowNames : [...DEFAULT_SHADOW_NAMES],
+        emotionName: prev.emotionName || '适应力、转化、平衡',
+        knowledgeCards: prev.knowledgeCards.length ? prev.knowledgeCards : [...ALL_KNOWLEDGE_CARD_IDS],
+        knowledge: prev.knowledge.length ? prev.knowledge : [
+          '对立面的结合（Coniunctio），才能催生真正的自我。',
+          '与其做个好人，不如做一个完整的人。',
+          '理性是你的工具，但灵魂是你的向导。',
+        ],
+      }));
+    } else if (phase === 'chapter4-individuation') {
       setGameState(prev => ({ ...prev, phase, unlockedChapters: unlockAll }));
     }
   }, [setPhase]);
