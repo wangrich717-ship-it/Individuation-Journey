@@ -177,17 +177,23 @@ export default function EchoPoemTask({ onComplete }: EchoPoemTaskProps) {
             创作"回响"：点击音调组成旋律（已选择 {melody.length}/30 个音符）
           </p>
           
-          <div className="flex justify-center gap-2 mb-4 flex-wrap">
+          <div className="p-3 sm:p-4 rounded-xl mb-2" style={{
+            background: 'rgba(8, 10, 18, 0.78)',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            border: '1px solid rgba(139, 164, 184, 0.2)',
+          }}>
+          <div className="flex justify-center gap-1.5 sm:gap-2 flex-wrap">
             {NOTES.map((note, index) => (
               <motion.button
                 key={`${note}-${index}`}
                 onClick={() => handleNoteClick(note)}
                 disabled={melody.length >= 30}
-                className="w-12 h-12 rounded-full border text-lg transition-all disabled:opacity-50 relative"
+                className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border text-sm sm:text-lg transition-all disabled:opacity-50 relative"
                 style={{
-                  background: 'rgba(139, 164, 184, 0.1)',
-                  borderColor: 'rgba(139, 164, 184, 0.5)',
-                  color: '#8BA4B8',
+                  background: 'rgba(139, 164, 184, 0.15)',
+                  borderColor: 'rgba(139, 164, 184, 0.55)',
+                  color: '#a8c0d4',
                   fontFamily: 'Noto Serif SC, serif',
                 }}
                 whileHover={melody.length < 30 ? { scale: 1.1 } : {}}
@@ -203,10 +209,16 @@ export default function EchoPoemTask({ onComplete }: EchoPoemTaskProps) {
               </motion.button>
             ))}
           </div>
+          </div>
 
           {/* 显示已选择的旋律 */}
           {melody.length > 0 && (
-            <div className="mt-4 p-4 rounded-lg" style={{ background: 'rgba(139, 164, 184, 0.05)' }}>
+            <div className="mt-4 p-4 rounded-lg" style={{
+              background: 'rgba(8, 10, 18, 0.78)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid rgba(139, 164, 184, 0.2)',
+            }}>
               <div className="flex items-center justify-between mb-2">
                 <div className="text-xs" style={{ color: '#8BA4B8' }}>你的旋律（点击删除，拖拽排序）：</div>
                 {!isPlaying && (
@@ -312,7 +324,12 @@ export default function EchoPoemTask({ onComplete }: EchoPoemTaskProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-8 p-6 rounded-lg"
-          style={{ background: 'rgba(139, 164, 184, 0.1)', border: '1px solid rgba(139, 164, 184, 0.3)' }}
+          style={{
+            background: 'rgba(8, 10, 18, 0.85)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(139, 164, 184, 0.35)',
+          }}
         >
           <p className="text-sm mb-4 italic" style={{ color: '#8BA4B8', fontFamily: 'Noto Serif SC, serif' }}>
             "这就是对话。不是你问我答，而是两种频率的相遇，产生了第三种东西——我们之间的'回响空间'。"

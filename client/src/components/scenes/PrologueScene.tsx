@@ -263,7 +263,7 @@ export default function PrologueScene({ titles, textOpacity, loopCount, onChoice
                   将面具拖放到下方位置中
                 </p>
                 <div className="w-full flex justify-center max-w-full">
-                  <div className="grid grid-cols-5 gap-2 sm:gap-4 w-full max-w-[564px] min-w-0">
+                  <div className="grid grid-cols-5 gap-1 sm:gap-3 w-full max-w-[564px] min-w-0">
                     {slots.map((slotTitle, index) => {
                       const expectedTitle = predefinedOrder[index];
                       return (
@@ -320,17 +320,16 @@ export default function PrologueScene({ titles, textOpacity, loopCount, onChoice
                           className="relative rounded border-2 border-dashed flex flex-col items-center justify-center transition-all w-full min-w-0"
                           style={{
                             aspectRatio: '4/5',
-                            minHeight: '72px',
-                            minWidth: '48px',
+                            minWidth: '40px',
                             borderColor: slotTitle ? 'rgba(196, 163, 90, 0.6)' : 'rgba(196, 163, 90, 0.2)',
                             background: slotTitle ? 'rgba(196, 163, 90, 0.05)' : 'transparent',
-                            padding: '6px',
+                            padding: '4px',
                           }}
                         >
                           {slotTitle ? (
                             <>
                               <div
-                                className="w-8 h-8 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-xl sm:text-2xl mb-1 sm:mb-2"
+                                className="w-6 h-6 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center text-base sm:text-2xl mb-0.5 sm:mb-2"
                                 style={{
                                   border: '2px solid rgba(196, 163, 90, 0.6)',
                                   background: 'rgba(20, 15, 10, 0.95)',

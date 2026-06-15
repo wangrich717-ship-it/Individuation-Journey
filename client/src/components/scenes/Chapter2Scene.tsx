@@ -228,7 +228,8 @@ export default function Chapter2Scene({ onComplete, onQuestionAnswer, onInventor
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="w-full max-w-4xl"
+              className="w-full max-w-4xl overflow-y-auto py-2"
+              style={{ maxHeight: 'calc(100dvh - 3rem)' }}
             >
               <EchoPoemTask onComplete={handleEchoPoemComplete} />
             </motion.div>
