@@ -712,7 +712,8 @@ export default function Chapter1Scene({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="max-w-6xl w-full text-center"
+              className="max-w-6xl w-full text-center overflow-y-auto py-2"
+              style={{ maxHeight: 'calc(100dvh - 3rem)' }}
             >
               <h3 className="text-xs uppercase tracking-[0.3em] mb-2" style={{ fontFamily: 'Cinzel, serif', color: '#FF6B35' }}>
                 任务：选择转化力量
@@ -734,12 +735,9 @@ export default function Chapter1Scene({
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-6"
+                    className="mb-3"
                   >
-                    <p className="text-sm mb-4" style={{ color: '#d4c5a0', fontFamily: 'Noto Serif SC, serif' }}>
-                      你抽到了三张动物卡
-                    </p>
-                    <div className="flex justify-center gap-2 sm:gap-4 mb-6 w-full px-2">
+                    <div className="flex justify-center gap-2 sm:gap-4 mb-3 w-full px-2">
                       {drawnAnimalCards.map((cardNum, index) => (
                         <motion.div
                           key={cardNum}
@@ -755,6 +753,7 @@ export default function Chapter1Scene({
                             className="w-full object-cover rounded block"
                             style={{
                               aspectRatio: '2/3',
+                              maxHeight: '30vw',
                               border: '2px solid rgba(196, 163, 90, 0.4)',
                               boxShadow: '0 0 20px rgba(196, 163, 90, 0.3)',
                             }}
@@ -766,7 +765,7 @@ export default function Chapter1Scene({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.8 }}
-                      className="text-sm italic mb-6"
+                      className="text-sm italic mb-3 px-2"
                       style={{ fontFamily: 'EB Garamond, serif', color: '#FF6B35' }}
                     >
                       "如果这三张卡是你的盟友，能够为你提供转化阴影的力量，那会是什么？"
@@ -781,7 +780,7 @@ export default function Chapter1Scene({
                       transition={{ delay: 1 }}
                       className="mb-6"
                     >
-                      <p className="text-sm mb-4" style={{ color: '#d4c5a0', fontFamily: 'Noto Serif SC, serif' }}>
+                      <p className="text-xs sm:text-sm mb-2" style={{ color: '#d4c5a0', fontFamily: 'Noto Serif SC, serif' }}>
                         选择三种转化力量 ({selectedPowers.length}/3)
                       </p>
                       {selectedPowers.length > 0 && (
@@ -795,7 +794,7 @@ export default function Chapter1Scene({
                           </p>
                         </motion.div>
                       )}
-                      <div className="flex flex-wrap justify-center gap-3 px-4 py-4">
+                      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2 sm:py-4">
                         {TRANSFORMATION_POWERS.map((power) => {
                           const isSelected = selectedPowers.includes(power);
                           const isDisabled = !isSelected && selectedPowers.length >= 3;
@@ -823,7 +822,7 @@ export default function Chapter1Scene({
                                 }
                               }}
                               disabled={isDisabled}
-                              className={`px-6 py-3 rounded-full text-sm transition-all ${
+                              className={`px-3 sm:px-6 py-1.5 sm:py-3 rounded-full text-xs sm:text-sm transition-all ${
                                 isSelected ? 'ring-2 ring-[#C4A35A]' : ''
                               } ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                               style={{
