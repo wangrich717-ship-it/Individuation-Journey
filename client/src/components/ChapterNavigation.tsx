@@ -103,34 +103,16 @@ function isChapterCompleted(phase: GamePhase, currentPhase: GamePhase): boolean 
   return currentIndex > completionIndex;
 }
 
-// 判断章节是否已解锁（可以访问）
+// 判断章节是否已解锁（可以访问）— 游戏开始后全部章节始终可自由跳转
 function isChapterUnlocked(
   phase: GamePhase,
   currentPhase: GamePhase,
-  gameState?: { phase: GamePhase; unlockedChapters?: GamePhase[] }
+  _gameState?: { phase: GamePhase; unlockedChapters?: GamePhase[] }
 ): boolean {
-  if (currentPhase === 'title') {
-    return phase === 'prologue';
-  }
-  if (phase === 'prologue') return true;
-  if (gameState?.unlockedChapters?.includes(phase)) return true;
-  const currentIndex = PHASE_ORDER.indexOf(gameState?.phase ?? currentPhase);
-  if (phase === 'chapter3-intro') {
-    return currentIndex >= PHASE_ORDER.indexOf('prologue-choice');
-  }
-  if (phase === 'chapter1-intro') {
-    return currentIndex >= PHASE_ORDER.indexOf('chapter3-choice');
-  }
-  if (phase === 'chapter2-intro') {
-    return currentIndex >= PHASE_ORDER.indexOf('chapter1-choice');
-  }
-  if (phase === 'alchemy-altar') {
-    return currentIndex >= PHASE_ORDER.indexOf('chapter2-choice');
-  }
-  if (phase === 'epilogue') {
-    return currentIndex >= PHASE_ORDER.indexOf('chapter4-individuation');
-  }
-  return false;
+  // 标题页只允许进序章
+  if (currentPhase === 'title') return phase === 'prologue';
+  // 游戏进行中：所有章节均可跳转
+  return true;
 }
 
 export default function ChapterNavigation({ currentPhase, onNavigate, gameState }: ChapterNavigationProps) {

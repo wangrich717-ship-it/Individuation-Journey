@@ -120,11 +120,12 @@ export default function KnowledgeCardPanel({ cardIds }: KnowledgeCardPanelProps)
                   —— 卡尔·荣格
                 </p>
               </div>
-              <div className="mt-4 text-center">
+              <div className="mt-4">
                 <button
                   onClick={() => setSelectedCard(null)}
-                  className="inline-block px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10"
+                  className="block px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10"
                   style={{
+                    margin: '0 auto',
                     fontFamily: 'Noto Serif SC, serif',
                     color: '#C4A35A',
                     border: '1px solid rgba(196, 163, 90, 0.3)',

@@ -363,23 +363,22 @@ export default function Home() {
 
   const isInGame = gameState.phase !== 'title';
 
-  // 处理章节导航跳转
+  // 处理章节导航跳转（玩家可自由跳转，同时解锁全部章节）
   const handleChapterNavigate = useCallback((phase: GamePhase) => {
-    // 重置章节相关状态，但保留解锁状态
+    const unlockAll = [...ALL_UNLOCKED];
     if (phase === 'prologue') {
       setGameState(prev => ({
         ...prev,
         phase: 'prologue',
         loopCount: 0,
         textOpacity: 1,
-        // 重置序章相关的问答和任务完成状态
+        unlockedChapters: unlockAll,
         questionAnswers: Object.fromEntries(
           Object.entries(prev.questionAnswers).filter(([key]) => !key.startsWith('prologue-'))
         ),
         taskCompletions: Object.fromEntries(
           Object.entries(prev.taskCompletions).filter(([key]) => !key.startsWith('prologue-'))
         ),
-        // 递增重置计数器以强制重新挂载组件
         chapterResetCounter: {
           ...prev.chapterResetCounter,
           prologue: (prev.chapterResetCounter?.prologue || 0) + 1,
@@ -392,14 +391,13 @@ export default function Home() {
         shadowNames: [],
         shadowName: '',
         emotionName: '',
-        // 重置第一章相关的问答和任务完成状态
+        unlockedChapters: unlockAll,
         questionAnswers: Object.fromEntries(
           Object.entries(prev.questionAnswers).filter(([key]) => !key.startsWith('chapter1-'))
         ),
         taskCompletions: Object.fromEntries(
           Object.entries(prev.taskCompletions).filter(([key]) => !key.startsWith('chapter1-'))
         ),
-        // 递增重置计数器以强制重新挂载组件
         chapterResetCounter: {
           ...prev.chapterResetCounter,
           'chapter1': (prev.chapterResetCounter?.['chapter1'] || 0) + 1,
@@ -409,14 +407,13 @@ export default function Home() {
       setGameState(prev => ({
         ...prev,
         phase: 'chapter2-intro',
-        // 重置第二章相关的问答和任务完成状态
+        unlockedChapters: unlockAll,
         questionAnswers: Object.fromEntries(
           Object.entries(prev.questionAnswers).filter(([key]) => !key.startsWith('chapter2-') && !key.startsWith('listening-') && !key.startsWith('understanding-'))
         ),
         taskCompletions: Object.fromEntries(
           Object.entries(prev.taskCompletions).filter(([key]) => !key.startsWith('chapter2-'))
         ),
-        // 递增重置计数器以强制重新挂载组件
         chapterResetCounter: {
           ...prev.chapterResetCounter,
           'chapter2': (prev.chapterResetCounter?.['chapter2'] || 0) + 1,
@@ -426,21 +423,20 @@ export default function Home() {
       setGameState(prev => ({
         ...prev,
         phase: 'chapter3-intro',
-        // 重置第三章相关的问答和任务完成状态
+        unlockedChapters: unlockAll,
         questionAnswers: Object.fromEntries(
           Object.entries(prev.questionAnswers).filter(([key]) => !key.startsWith('chapter3-'))
         ),
         taskCompletions: Object.fromEntries(
           Object.entries(prev.taskCompletions).filter(([key]) => !key.startsWith('chapter3-'))
         ),
-        // 递增重置计数器以强制重新挂载组件
         chapterResetCounter: {
           ...prev.chapterResetCounter,
           'chapter3': (prev.chapterResetCounter?.['chapter3'] || 0) + 1,
         },
       }));
     } else if (phase === 'alchemy-altar' || phase === 'chapter4-individuation' || phase === 'epilogue') {
-      setPhase(phase);
+      setGameState(prev => ({ ...prev, phase, unlockedChapters: unlockAll }));
     }
   }, [setPhase]);
 
