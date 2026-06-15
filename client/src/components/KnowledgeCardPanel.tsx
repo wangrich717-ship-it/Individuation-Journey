@@ -120,17 +120,19 @@ export default function KnowledgeCardPanel({ cardIds }: KnowledgeCardPanelProps)
                   —— 卡尔·荣格
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedCard(null)}
-                className="mt-4 px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10"
-                style={{
-                  fontFamily: 'Noto Serif SC, serif',
-                  color: '#C4A35A',
-                  border: '1px solid rgba(196, 163, 90, 0.3)',
-                }}
-              >
-                关闭
-              </button>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => setSelectedCard(null)}
+                  className="px-4 py-2 text-xs transition-all hover:bg-[#C4A35A]/10"
+                  style={{
+                    fontFamily: 'Noto Serif SC, serif',
+                    color: '#C4A35A',
+                    border: '1px solid rgba(196, 163, 90, 0.3)',
+                  }}
+                >
+                  关闭
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
