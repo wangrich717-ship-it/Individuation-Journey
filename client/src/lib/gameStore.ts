@@ -2,7 +2,6 @@
  * Game State Management for Individuation Journey
  * Design: Dark Alchemical Manuscript — all state transitions are ritualistic
  */
-import { IMAGERY_SEA_DATA_URL } from './imagerySeaDataUrl';
 
 export type GamePhase =
   | 'title'
@@ -93,7 +92,7 @@ export const SCENE_IMAGES = {
   forest: '/bg-forest.webp',
   alchemy: '/bg-alchemy.webp',
   starfield: '/bg-starfield.webp',
-  imagerySea: IMAGERY_SEA_DATA_URL,
+  imagerySea: '/imagery-sea.webp',
 };
 
 // Shadow name options for Chapter 1 quest (扩展至18个)
