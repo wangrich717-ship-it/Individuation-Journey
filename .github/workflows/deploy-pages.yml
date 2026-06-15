@@ -62,6 +62,9 @@ jobs:
             "/imagery",
             "/复原主卡",
             "/动物卡",
+            "/bg-",
+            "/imagery-sea.webp",
+            "/fonts",
           ]
 
           exts = (".js", ".css", ".html", ".map")
