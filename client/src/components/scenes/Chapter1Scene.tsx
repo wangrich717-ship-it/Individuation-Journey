@@ -739,20 +739,22 @@ export default function Chapter1Scene({
                     <p className="text-sm mb-4" style={{ color: '#d4c5a0', fontFamily: 'Noto Serif SC, serif' }}>
                       你抽到了三张动物卡
                     </p>
-                    <div className="flex justify-center gap-4 mb-6">
+                    <div className="flex justify-center gap-2 sm:gap-4 mb-6 w-full px-2">
                       {drawnAnimalCards.map((cardNum, index) => (
                         <motion.div
                           key={cardNum}
                           initial={{ opacity: 0, scale: 0.8, rotate: -5 + index * 3 }}
                           animate={{ opacity: 1, scale: 1, rotate: -2 + index * 1 }}
                           transition={{ delay: index * 0.2, duration: 0.5 }}
-                          className="relative"
+                          className="relative flex-1 min-w-0"
+                          style={{ maxWidth: '10rem' }}
                         >
                           <img
                             src={getAnimalCardImagePath(cardNum)}
                             alt={`动物卡 ${cardNum}`}
-                            className="w-48 h-72 object-cover rounded mx-auto"
+                            className="w-full object-cover rounded block"
                             style={{
+                              aspectRatio: '2/3',
                               border: '2px solid rgba(196, 163, 90, 0.4)',
                               boxShadow: '0 0 20px rgba(196, 163, 90, 0.3)',
                             }}
